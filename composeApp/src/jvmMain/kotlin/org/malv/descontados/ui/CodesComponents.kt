@@ -91,7 +91,7 @@ fun CodesInput(
                     onValueChange = onCodeChanges,
                     maxLines = Int.MAX_VALUE,
                     label = { Text("Códigos") },
-                    modifier = Modifier.fillMaxHeight()
+                    modifier = Modifier.fillMaxHeight().fillMaxWidth()
                 )
             }
         }
@@ -155,6 +155,7 @@ fun CodesUI(
     val updating by youtubeViewModel.updating.collectAsState()
     var collapsed by rememberSaveable { mutableIntStateOf(0) }
     val videosList = youtubeViewModel.videos.collectAsState().value
+    val totalVideos = youtubeViewModel.totalVideos.collectAsState().value
 
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = modifier) {
         Column(
@@ -188,6 +189,7 @@ fun CodesUI(
                 updating = updating,
                 onUpdateClicked = { youtubeViewModel.updateVideos() },
                 videoLists = videosList,
+                totalVideos = totalVideos,
             )
         }
     }
@@ -198,6 +200,7 @@ fun VideosListUI(
     updateEnabled: Boolean,
     updating: Boolean,
     onUpdateClicked: () -> Unit,
+    totalVideos: Int,
     videoLists: List<VideoResult>,
 ) {
     val scrollState = rememberLazyListState()
@@ -244,7 +247,7 @@ fun VideosListUI(
             }
 
             Text(
-                text = "${videos.size}/${videoLists.size}",
+                text = "${videos.size}/$totalVideos",
                 style = MaterialTheme.typography.bodySmall,
                 textAlign = TextAlign.End,
                 modifier = Modifier.fillMaxWidth()

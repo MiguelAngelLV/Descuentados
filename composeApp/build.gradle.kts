@@ -32,10 +32,8 @@ kotlin {
             implementation(libs.google.youtube)
             implementation(libs.bundles.dataframe)
 
-            implementation("ch.qos.logback:logback-classic:1.4.11")
-            implementation("ch.qos.logback:logback-core:1.4.11")
-
             implementation(libs.compose.navigation)
+            implementation(libs.bundles.logback)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -75,6 +73,7 @@ compose.desktop {
         }
 
         nativeDistributions {
+            modules("jdk.httpserver")
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "descontados"
             packageVersion = "1.0.0"

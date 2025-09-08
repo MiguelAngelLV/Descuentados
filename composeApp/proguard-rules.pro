@@ -100,3 +100,5 @@
     public static final java.lang.Boolean TRUE;
     public static final java.lang.Boolean FALSE;
 }
+
+-keep class com.sun.net.httpserver.** { *; }

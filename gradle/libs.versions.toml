@@ -10,7 +10,7 @@ google-auth = '1.39.0'
 google-youtube = 'v3-rev20250714-2.0.0'
 detekt = "1.23.8"
 dataframe = "1.0.0-Beta2"
-filekit = "0.10.0"
+logback = "1.4.11"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -26,8 +26,10 @@ google-auth = { module = 'com.google.oauth-client:google-oauth-client-jetty', ve
 google-youtube = { module = 'com.google.apis:google-api-services-youtube', version.ref = "google-youtube" }
 dataframe-core = { module = "org.jetbrains.kotlinx:dataframe-core", version.ref = "dataframe" }
 dataframe-csv = { module = "org.jetbrains.kotlinx:dataframe-csv", version.ref = "dataframe" }
-kotlin-logs = {module = "org.jetbrains.kotlinx:kotlinx-coroutines-slf4j", version.ref = "kotlinx-coroutines"}
+kotlin-logs = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-slf4j", version.ref = "kotlinx-coroutines" }
 compose-navigation = "org.jetbrains.androidx.navigation:navigation-compose:2.9.0-beta05"
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+logback-core = { module = "ch.qos.logback:logback-core", version.ref = "logback" }
 
 [plugins]
 composeHotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "composeHotReload" }
@@ -40,3 +42,4 @@ ksp = { id = "com.google.devtools.ksp", version = "2.2.0-2.0.2" }
 
 [bundles]
 dataframe = ["dataframe-core", "dataframe-csv"]
+logback = ["logback-classic", "logback-core"]

@@ -33,6 +33,9 @@ class YoutubeViewModel(
     private val _videos = MutableStateFlow<List<VideoResult>>(emptyList())
     val videos: StateFlow<List<VideoResult>> = _videos.asStateFlow()
 
+    private val _totalVideos = MutableStateFlow(0)
+    val totalVideos: StateFlow<Int> = _totalVideos.asStateFlow()
+
     fun updateClientSecretPath(path: String) {
         _clientSecretPath.value = path
         configuration.clientSecretPath = path
@@ -55,12 +58,13 @@ class YoutubeViewModel(
         val credentials = loginService.getCredentials() ?: return@launch
 
         _updating.value = true
+        _totalVideos.value = 0
         _videos.value = emptyList()
         val youtube = YoutubeService(credentials)
         val videos = youtube.getVideos()
         val aliexpress = videos.filter { it.description.contains("aliexpress", true) }
         val languages = configuration.languages.associateBy { it.code }
-
+        _totalVideos.value = aliexpress.size
         aliexpress.forEach { video ->
             _videos.value += youtube.updateVideo(video, languages, configuration.codes)
         }
