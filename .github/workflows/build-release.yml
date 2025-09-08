@@ -47,7 +47,8 @@ jobs:
           
           if [[ "${{ github.event.inputs.prerelease }}" == "true" ]]; then
             prereleases=$(gh release list --limit 1000 --json tagName,isPrerelease -q '.[] | select(.isPrerelease==true) | .tagName' || true)
-            last_beta=$(echo "$prereleases" | grep "^${NEXT}-Beta" | sort -V | tail -n1 | sed -E 's/.*-Beta([0-9]+)/\1/' || echo "0")
+            last_beta=$(echo "$prereleases" | grep "^${NEXT}-Beta" | sort -V | tail -n1 | sed -E 's/.*-Beta([0-9]+)/\1/' || true)
+            last_beta=${last_beta:-0}
             next_beta=$(printf "%02d" $((10#$last_beta + 1)))
             NEXT="${NEXT}-Beta${next_beta}"
           fi
