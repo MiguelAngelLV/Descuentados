@@ -10,7 +10,6 @@ import org.malv.descontados.services.ConfigurationService
 import org.malv.descontados.ui.App
 
 fun main(args: Array<String>) = application {
-    println(args.joinToString())
 
     Window(
         onCloseRequest = {
