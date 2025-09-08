@@ -12,6 +12,6 @@ data class Video(
         get() = when {
             language.startsWith("en", ignoreCase = true) -> "en-US"
             language.startsWith("es", ignoreCase = true) -> "es-ES"
-            else -> "en_US"
+            else -> "en-US"
         }
 }
