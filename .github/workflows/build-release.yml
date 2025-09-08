@@ -1,0 +1,132 @@
+name: Release Compose App
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to release'
+        required: true
+        default: 'main'
+      prerelease:
+        type: boolean
+        description: 'Is this a pre-release?'
+        required: false
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  create_release:
+    runs-on: ubuntu-latest
+    outputs:
+      release_id: ${{ steps.create_release.outputs.id }}
+      release_version: ${{ steps.determine_version.outputs.version }}
+    steps:
+      - name: Checkout (full history & tags)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine release version (YYYY.MM.increment)
+        id: determine_version
+        run: |
+          YEAR=$(date +'%Y')
+          MONTH=$(date +'%m')
+          PREFIX="v${YEAR}.${MONTH}"
+          releases=$(gh release list --limit 1000 --json tagName,isPrerelease -q '.[] | select(.isPrerelease==false) | .tagName' || true)
+          
+          latest=$(echo "$releases" | grep "^${PREFIX}\." | sort -V | tail -n1 || true)
+          
+          if [ -z "$latest" ]; then
+            NEXT="${PREFIX}.1"
+            else
+            num=$(echo "$latest" | awk -F. '{print $3}')
+            NEXT="${PREFIX}.$((num+1))"
+          fi
+          
+          if [[ "${{ github.event.inputs.prerelease }}" == "true" ]]; then
+            prereleases=$(gh release list --limit 1000 --json tagName,isPrerelease -q '.[] | select(.isPrerelease==true) | .tagName' || true)
+            last_beta=$(echo "$prereleases" | grep "^${NEXT}-Beta" | sort -V | tail -n1 | sed -E 's/.*-Beta([0-9]+)/\1/' || echo "0")
+            next_beta=$(printf "%02d" $((10#$last_beta + 1)))
+            NEXT="${NEXT}-Beta${next_beta}"
+          fi
+          
+          echo "version=$NEXT" >> $GITHUB_OUTPUT
+          echo "RELEASE_VERSION=$NEXT" >> $GITHUB_ENV
+          echo "Determined version: $NEXT"
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create GitHub release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.RELEASE_VERSION }}
+          prerelease: ${{ github.event.inputs.prerelease  || 'false' }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build:
+    needs: create_release
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            gradle_task: ":composeApp:packageReleaseDeb"
+            artifact_ext: deb
+          - os: windows-latest
+            gradle_task: ":composeApp:packageReleaseMsi"
+            artifact_ext: msi
+          - os: macos-latest
+            gradle_task: ":composeApp:packageReleaseDmg"
+            artifact_ext: dmg
+
+    steps:
+      - name: Checkout code (branch to release)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
+          fetch-depth: 0
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ matrix.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            gradle-${{ matrix.os }}-
+
+      - name: Build
+        run: ./gradlew ${{ matrix.gradle_task }}
+
+      - name: Find artifact
+        shell: bash
+        run: |
+          mkdir -p artifacts
+          FILE=$(find composeApp/build/compose/binaries -type f -name "*.${{ matrix.artifact_ext }}" | head -n 1)
+          if [ -z "$FILE" ]; then
+            echo "No artifact found for ext ${{ matrix.artifact_ext }}"
+            exit 1
+          fi
+          cp "$FILE" "artifacts/descontados-${{ needs.create_release.outputs.release_version }}-${{ matrix.os }}.${{ matrix.artifact_ext }}"
+          ls -la artifacts
+
+      - name: Upload artifact to the release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*
+          tag_name: ${{ needs.create_release.outputs.release_version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
