@@ -19,7 +19,7 @@ class YoutubeViewModel(
     private val _clientSecretPath = MutableStateFlow(configuration.clientSecretPath)
     val clientSecretPath: StateFlow<String> = _clientSecretPath.asStateFlow()
 
-    var loginService = LoginService(clientSecretPath.value, ConfigurationService.instance)
+    private var loginService = LoginService(clientSecretPath.value, ConfigurationService.instance)
 
     private val _isLogged = MutableStateFlow(loginService.isLoggedIn())
     val isLogged: StateFlow<Boolean> = _isLogged.asStateFlow()

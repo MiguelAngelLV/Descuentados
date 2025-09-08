@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextAlign.Companion.End
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import org.malv.descontados.services.CommissionService
 import org.malv.descontados.viewmodels.CommissionViewModel
 import javax.swing.JFileChooser
@@ -27,7 +28,7 @@ import javax.swing.filechooser.FileNameExtensionFilter
 
 @Composable
 fun CommissionsUI(
-    commissionViewModel: CommissionViewModel = CommissionViewModel(CommissionService.instance)
+    commissionViewModel: CommissionViewModel = viewModel { CommissionViewModel(CommissionService.instance) }
 ) {
     val commissions by commissionViewModel.commissions.collectAsState()
     val selected by commissionViewModel.selected.collectAsState()
