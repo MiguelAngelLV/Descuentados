@@ -32,8 +32,8 @@ class CommissionService {
                 "Order Platform" to "platform",
                 "OrderID" to "order"
             ).convertTo<Row>()
-            .filter { it["status"] != "Invalid" }
-            .filter { it["platform"] == "influencer platform" }
+            .filter { it["status"] != INVALID }
+            .filter { it["platform"] == INFLUENCER_PLATFORM }
             .groupBy("order")
             .aggregate {
                 min("date") into "date"
@@ -66,5 +66,7 @@ class CommissionService {
 
     companion object {
         val instance = CommissionService()
+        private const val INFLUENCER_PLATFORM = "influencer platform"
+        private const val INVALID = "Invalid"
     }
 }
