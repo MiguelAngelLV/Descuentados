@@ -1,4 +1,4 @@
-package org.malv.descontados.ui
+package org.malv.descuentados.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,8 +21,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextAlign.Companion.End
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import org.malv.descontados.services.CommissionService
-import org.malv.descontados.viewmodels.CommissionViewModel
+import org.malv.descuentados.services.CommissionService
+import org.malv.descuentados.viewmodels.CommissionViewModel
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
 

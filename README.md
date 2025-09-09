@@ -1,11 +1,11 @@
-# Descontados
+# Descuentados
 
-Descontados es una aplicación que permite mantener un registro de códigos de descuentos actualizados en los vídeos de YouTube.
+Descuentados es una aplicación que permite mantener un registro de códigos de descuentos actualizados en los vídeos de YouTube.
 
 También permite calcular las ganancias de las comisiones en los últimos meses mostrando comparaciones entre los meses.
 
 ## Uso
-Deberás descargar la versión correspondiente a tu sistema operativo e instalarla. Podrás encontrarlas en la sección de [releases](https://github.com/miguelangel_lv/descontados/releases).
+Deberás descargar la versión correspondiente a tu sistema operativo e instalarla. Podrás encontrarlas en la sección de [releases](https://github.com/miguelangel_lv/descuentados/releases).
 
 ### Youtube
 

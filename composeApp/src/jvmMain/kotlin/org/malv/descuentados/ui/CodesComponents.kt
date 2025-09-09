@@ -1,4 +1,4 @@
-package org.malv.descontados.ui
+package org.malv.descuentados.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
@@ -57,14 +57,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import org.malv.descontados.models.Language
-import org.malv.descontados.models.VideoResult
-import org.malv.descontados.models.VideoStatus
-import org.malv.descontados.services.CodesService
-import org.malv.descontados.services.ConfigurationService
-import org.malv.descontados.services.DesktopService
-import org.malv.descontados.viewmodels.CodesViewModel
-import org.malv.descontados.viewmodels.YoutubeViewModel
+import org.malv.descuentados.models.Language
+import org.malv.descuentados.models.VideoResult
+import org.malv.descuentados.models.VideoStatus
+import org.malv.descuentados.services.CodesService
+import org.malv.descuentados.services.ConfigurationService
+import org.malv.descuentados.services.DesktopService
+import org.malv.descuentados.viewmodels.CodesViewModel
+import org.malv.descuentados.viewmodels.YoutubeViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

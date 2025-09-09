@@ -1,11 +1,11 @@
-package org.malv.descontados.viewmodels
+package org.malv.descuentados.viewmodels
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import org.malv.descontados.models.Language
-import org.malv.descontados.services.ConfigurationService
+import org.malv.descuentados.models.Language
+import org.malv.descuentados.services.ConfigurationService
 
 class CodesViewModel(private val configuration: ConfigurationService) : ViewModel() {
 

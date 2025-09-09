@@ -1,4 +1,4 @@
-package org.malv.descontados.models
+package org.malv.descuentados.models
 
 data class Commission(
     val commission: Double,

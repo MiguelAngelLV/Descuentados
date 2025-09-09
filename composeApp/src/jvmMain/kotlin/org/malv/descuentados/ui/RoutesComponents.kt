@@ -1,10 +1,10 @@
-package org.malv.descontados.ui
+package org.malv.descuentados.ui
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import org.malv.descontados.models.Routes
+import org.malv.descuentados.models.Routes
 
 @Composable
 fun AppNavHost(

@@ -1,11 +1,11 @@
-package org.malv.descontados.viewmodels
+package org.malv.descuentados.viewmodels
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import org.malv.descontados.models.Commission
-import org.malv.descontados.services.CommissionService
+import org.malv.descuentados.models.Commission
+import org.malv.descuentados.services.CommissionService
 
 class CommissionViewModel(
     private val commissionService: CommissionService

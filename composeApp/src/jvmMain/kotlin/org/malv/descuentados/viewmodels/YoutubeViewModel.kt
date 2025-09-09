@@ -1,4 +1,4 @@
-package org.malv.descontados.viewmodels
+package org.malv.descuentados.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -6,10 +6,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.malv.descontados.models.VideoResult
-import org.malv.descontados.services.ConfigurationService
-import org.malv.descontados.services.LoginService
-import org.malv.descontados.services.YoutubeService
+import org.malv.descuentados.models.VideoResult
+import org.malv.descuentados.services.ConfigurationService
+import org.malv.descuentados.services.LoginService
+import org.malv.descuentados.services.YoutubeService
 import java.io.File
 
 class YoutubeViewModel(
