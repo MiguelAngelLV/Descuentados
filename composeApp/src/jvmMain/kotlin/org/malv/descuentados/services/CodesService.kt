@@ -1,4 +1,4 @@
-package org.malv.descontados.services
+package org.malv.descuentados.services
 
 object CodesService {
     private val REGEX_CODE = Regex("(\\d+)\\D.*\\D(\\d{1,3}).*【(\\w+)】")

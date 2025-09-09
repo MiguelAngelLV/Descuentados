@@ -1,4 +1,4 @@
-package org.malv.descontados.models
+package org.malv.descuentados.models
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.QueryStats

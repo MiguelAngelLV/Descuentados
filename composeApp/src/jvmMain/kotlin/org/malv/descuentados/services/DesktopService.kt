@@ -1,6 +1,6 @@
-package org.malv.descontados.services
+package org.malv.descuentados.services
 
-import org.malv.descontados.services.LoginService.InvalidOSError
+import org.malv.descuentados.services.LoginService.InvalidOSError
 import java.awt.Desktop
 import java.net.URI
 

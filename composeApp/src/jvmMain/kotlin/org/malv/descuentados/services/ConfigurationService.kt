@@ -1,6 +1,6 @@
-package org.malv.descontados.services
+package org.malv.descuentados.services
 
-import org.malv.descontados.models.Language
+import org.malv.descuentados.models.Language
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -15,6 +15,7 @@ class ConfigurationService {
 
     private fun load(): Properties {
         configDir.mkdirs()
+        migrateOldConfig()
         val file = Properties()
         if (configFile.exists()) {
             FileInputStream(configFile).use {
@@ -91,11 +92,20 @@ class ConfigurationService {
         }
     }
 
+    private fun migrateOldConfig() {
+        val oldDir = File(configDir.parent, OLD_DIRECTORY)
+        if (oldDir.exists()) {
+            oldDir.copyRecursively(configDir, overwrite = true)
+            oldDir.deleteRecursively()
+        }
+    }
+
     companion object {
         private const val DEFAULT_TEMPLATE = "{{discount}}$ en pedidos de {{minOrder}}$: {{code}}"
         private const val DEFAULT_START = "*Descuentos Aliexpress*"
         private const val DEFAULT_END = "*Capítulos*"
-        private const val APP_DIRECTORY = "descontados"
+        private const val APP_DIRECTORY = "descuentados"
+        private const val OLD_DIRECTORY = "descontados"
 
         val instance = ConfigurationService()
     }

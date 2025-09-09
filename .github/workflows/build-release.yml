@@ -121,7 +121,7 @@ jobs:
             echo "No artifact found for ext ${{ matrix.artifact_ext }}"
             exit 1
           fi
-          cp "$FILE" "artifacts/descontados-${{ needs.create_release.outputs.release_version }}-${{ matrix.os }}.${{ matrix.artifact_ext }}"
+          cp "$FILE" "artifacts/descuentados-${{ needs.create_release.outputs.release_version }}-${{ matrix.os }}.${{ matrix.artifact_ext }}"
           ls -la artifacts
 
       - name: Upload artifact to the release

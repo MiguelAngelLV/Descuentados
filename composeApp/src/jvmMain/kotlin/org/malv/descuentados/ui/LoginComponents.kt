@@ -1,4 +1,4 @@
-package org.malv.descontados.ui
+package org.malv.descuentados.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,8 +13,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import org.malv.descontados.services.ConfigurationService
-import org.malv.descontados.viewmodels.YoutubeViewModel
+import org.malv.descuentados.services.ConfigurationService
+import org.malv.descuentados.viewmodels.YoutubeViewModel
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
 

@@ -62,7 +62,7 @@ kotlin {
 
 compose.desktop {
     application {
-        mainClass = "org.malv.descontados.MainKt"
+        mainClass = "org.malv.descuentados.MainKt"
 
         buildTypes {
             release {
@@ -75,7 +75,7 @@ compose.desktop {
         nativeDistributions {
             modules("jdk.httpserver")
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "descontados"
+            packageName = "descuentados"
             packageVersion = "1.0.0"
         }
     }

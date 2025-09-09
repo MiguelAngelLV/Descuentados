@@ -1,4 +1,4 @@
-package org.malv.descontados.services
+package org.malv.descuentados.services
 
 import kotlinx.datetime.LocalDate
 import org.jetbrains.kotlinx.dataframe.DataFrame
@@ -17,7 +17,7 @@ import org.jetbrains.kotlinx.dataframe.api.sortBy
 import org.jetbrains.kotlinx.dataframe.api.sum
 import org.jetbrains.kotlinx.dataframe.api.toList
 import org.jetbrains.kotlinx.dataframe.io.readCsv
-import org.malv.descontados.models.Commission
+import org.malv.descuentados.models.Commission
 import java.util.Locale
 
 class CommissionService {

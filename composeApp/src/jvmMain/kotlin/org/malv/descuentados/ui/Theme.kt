@@ -1,4 +1,4 @@
-package org.malv.descontados.ui
+package org.malv.descuentados.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
