@@ -118,7 +118,7 @@ class YoutubeService(
 
         val newDescription = video.description.replace(codes, newCodes)
         if (newDescription.length > MAX_LENGTH) {
-            return VideoResult(video.id, video.title, VideoStatus.ERROR, "Descripción demasiado larga.")
+            return VideoResult(video.id, video.title, VideoStatus.ERROR, "Descripción demasiado larga: ${video.description.length} -> ${newDescription.length}")
         }
 
         return runCatching {
