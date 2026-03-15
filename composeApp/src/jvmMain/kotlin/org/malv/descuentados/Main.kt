@@ -16,7 +16,7 @@ fun main(args: Array<String>) = application {
             exitApplication()
         },
         title = "Descuentados",
-        state = WindowState(width = 1000.dp, height = 800.dp, position = WindowPosition.Aligned(Alignment.TopEnd))
+        state = WindowState(width = 1000.dp, height = 800.dp, position = WindowPosition.Aligned(Alignment.TopEnd)),
     ) {
         App()
     }

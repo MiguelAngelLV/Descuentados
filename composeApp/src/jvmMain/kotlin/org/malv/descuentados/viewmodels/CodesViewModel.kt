@@ -13,7 +13,7 @@ class CodesViewModel(private val configuration: ConfigurationService) : ViewMode
     val codes: StateFlow<String> = _codes.asStateFlow()
 
     private val _languages = MutableStateFlow(configuration.languages)
-    val languages: StateFlow<List<Language>> = _languages.asStateFlow()
+    val languages: StateFlow<Map<String, Language>> = _languages.asStateFlow()
 
     fun updateCodes(input: String) {
         _codes.value = input
@@ -21,8 +21,20 @@ class CodesViewModel(private val configuration: ConfigurationService) : ViewMode
     }
 
     fun updateLanguage(language: Language) {
-        val updated = configuration.languages.map { if (it.code == language.code) language else it }
-        _languages.value = updated
+        val updated = configuration.languages + (language.code to language)
         configuration.languages = updated
+        _languages.value = updated
+    }
+
+    fun addLanguage(language: Language) {
+        val updated = configuration.languages + (language.code to language)
+        configuration.languages = updated
+        _languages.value = updated
+    }
+
+    fun deleteLanguage(code: String) {
+        val updated = configuration.languages - code
+        configuration.languages = updated
+        _languages.value = updated
     }
 }
