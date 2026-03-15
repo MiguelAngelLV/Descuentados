@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -38,8 +37,6 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -57,10 +54,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import org.malv.descuentados.models.Language
 import org.malv.descuentados.models.VideoResult
 import org.malv.descuentados.models.VideoStatus
-import org.malv.descuentados.services.CodesService
 import org.malv.descuentados.services.ConfigurationService
 import org.malv.descuentados.services.DesktopService
 import org.malv.descuentados.viewmodels.CodesViewModel
@@ -98,51 +93,6 @@ fun CodesInput(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun CodesPreview(
-    languages: List<Language>,
-    codes: String,
-    visible: Boolean,
-    onClicked: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    var tabIndex by rememberSaveable { mutableIntStateOf(0) }
-
-    CustomCard(
-        modifier = modifier.fillMaxWidth()
-    ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.padding(8.dp)
-                .onClick(enabled = true, onClick = onClicked)
-        ) {
-            Text("Preview", style = MaterialTheme.typography.titleLarge, modifier = Modifier.fillMaxWidth())
-            AnimatedVisibility(visible) {
-                Column {
-                    TabRow(selectedTabIndex = tabIndex) {
-                        languages.forEachIndexed { index, language ->
-                            Tab(
-                                text = { Text(language.title) },
-                                selected = tabIndex == index,
-                                onClick = { tabIndex = index }
-                            )
-                        }
-                    }
-                    val language = languages[tabIndex]
-
-                    Text(
-                        text = CodesService.generateCodes(codes = codes, language.template, language.start, language.end),
-                        modifier = Modifier.fillMaxHeight(),
-                        style = MaterialTheme.typography.bodySmall,
-                        maxLines = Int.MAX_VALUE,
-                    )
-                }
-            }
-        }
-    }
-}
-
 @Composable
 fun CodesUI(
     codesViewModel: CodesViewModel = viewModel { CodesViewModel(ConfigurationService.instance) },
@@ -157,41 +107,27 @@ fun CodesUI(
     val videosList = youtubeViewModel.videos.collectAsState().value
     val totalVideos = youtubeViewModel.totalVideos.collectAsState().value
 
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = modifier) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp), modifier =
-                Modifier.padding(16.dp).fillMaxWidth(0.5f)
-        ) {
-            CodesInput(
-                codes = codes,
-                visible = collapsed == 0,
-                onCodeChanges = codesViewModel::updateCodes,
-                onClicked = { collapsed = 0 },
-                modifier = if (collapsed == 0) Modifier.weight(1f) else Modifier.height(60.dp)
-            )
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = modifier
+            .padding(8.dp)
+    ) {
+        CodesInput(
+            codes = codes,
+            visible = collapsed == 0,
+            onCodeChanges = codesViewModel::updateCodes,
+            onClicked = { collapsed = 0 },
+            modifier = Modifier.weight(0.5f)
+        )
 
-            CodesPreview(
-                languages = languages,
-                codes = codes,
-                visible = collapsed == 1,
-                onClicked = { collapsed = 1 },
-                modifier = if (collapsed == 1) Modifier.weight(1f) else Modifier.height(60.dp)
-            )
-        }
-
-        Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.fillMaxHeight().padding(8.dp)
-
-        ) {
-            VideosListUI(
-                updateEnabled = updateEnabled,
-                updating = updating,
-                onUpdateClicked = { youtubeViewModel.updateVideos() },
-                videoLists = videosList,
-                totalVideos = totalVideos,
-            )
-        }
+        VideosListUI(
+            updateEnabled = updateEnabled,
+            updating = updating,
+            onUpdateClicked = { youtubeViewModel.updateVideos() },
+            videoLists = videosList,
+            totalVideos = totalVideos,
+            modifier = Modifier.weight(0.5f)
+        )
     }
 }
 
@@ -202,13 +138,14 @@ fun VideosListUI(
     onUpdateClicked: () -> Unit,
     totalVideos: Int,
     videoLists: List<VideoResult>,
+    modifier: Modifier,
 ) {
     val scrollState = rememberLazyListState()
     var states by remember { mutableStateOf(VideoStatus.entries.toSet()) }
     var filterMenu by remember { mutableStateOf(false) }
     val videos = videoLists.filter { it.status in states }
 
-    CustomCard(modifier = Modifier.fillMaxSize().padding(8.dp)) {
+    CustomCard(modifier = modifier.fillMaxSize()) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(8.dp)) {
                 Text("Videos", style = MaterialTheme.typography.titleLarge, modifier = Modifier.weight(1f))
@@ -236,8 +173,10 @@ fun VideosListUI(
             }
 
             Box(modifier = Modifier.weight(1f)) {
-                LazyColumn(modifier = Modifier.fillMaxSize()
-                    .padding(end = 12.dp), state = scrollState) {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize()
+                        .padding(end = 12.dp), state = scrollState
+                ) {
                     items(videos) { v ->
                         VideoItem(v)
                     }

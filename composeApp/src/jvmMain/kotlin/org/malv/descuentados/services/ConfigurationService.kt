@@ -1,28 +1,30 @@
 package org.malv.descuentados.services
 
+import com.google.gson.GsonBuilder
+import org.malv.descuentados.models.Configuration
 import org.malv.descuentados.models.Language
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.io.FileReader
+import java.io.FileWriter
 import java.nio.file.Paths
-import java.util.Properties
 
 class ConfigurationService {
     private val configDir = userDirectory()
-    private val configFile = File(configDir, "app.properties")
+    private val configFile = File(configDir, "config.json")
 
-    private val properties by lazy { load() }
+    private val configuration = load()
 
-    private fun load(): Properties {
+    private fun load(): Configuration {
         configDir.mkdirs()
-        migrateOldConfig()
-        val file = Properties()
         if (configFile.exists()) {
             FileInputStream(configFile).use {
-                file.load(it)
+                val gson = GsonBuilder().setPrettyPrinting().create()
+                return gson.fromJson(FileReader(configFile), Configuration::class.java) ?: Configuration()
             }
         }
-        return file
+        return Configuration()
     }
 
     fun getDirectory(name: String): File {
@@ -31,44 +33,32 @@ class ConfigurationService {
 
     fun save() {
         if (!configFile.parentFile.exists()) configFile.parentFile.mkdirs()
-        FileOutputStream(configFile).use { properties.store(it, "YouTube App Config") }
+        FileOutputStream(configFile).use {
+            val gson = GsonBuilder().setPrettyPrinting().create()
+            val json = gson.toJson(configuration)
+            val writer = FileWriter(configFile)
+            writer.write(json)
+            writer.flush()
+        }
     }
 
     var codes: String
-        get() = properties.getProperty("codes", "")
+        get() = configuration.codes
         set(value) {
-            properties.setProperty("codes", value)
+            configuration.codes = value
         }
 
-    var languages: List<Language>
-        get() = getCodeLanguages()
+    var languages: Map<String, Language>
+        get() = configuration.languages
         set(value) {
-            saveCodeLanguages(value)
+            configuration.languages = value
         }
 
     var clientSecretPath: String
-        get() = properties.getProperty("client_secret_path", "")
+        get() = configuration.clientSecretPath
         set(value) {
-            properties.setProperty("client_secret_path", value)
+            configuration.clientSecretPath = value
         }
-
-    private fun getCodeLanguages(): List<Language> {
-        return listOf("Español" to "es-ES", "Inglés" to "en-US")
-            .map {
-                val template = properties.getProperty("${it.second}_template", DEFAULT_TEMPLATE)
-                val start = properties.getProperty("${it.second}_start", DEFAULT_START)
-                val end = properties.getProperty("${it.second}_end", DEFAULT_END)
-                Language(title = it.first, template = template, start = start, end = end, code = it.second)
-            }
-    }
-
-    private fun saveCodeLanguages(languages: List<Language>) {
-        languages.forEach { language ->
-            properties.setProperty("${language.code}_template", language.template)
-            properties.setProperty("${language.code}_start", language.start)
-            properties.setProperty("${language.code}_end", language.end)
-        }
-    }
 
     private fun userDirectory(): File {
         val os = System.getProperty("os.name").lowercase()
@@ -92,20 +82,8 @@ class ConfigurationService {
         }
     }
 
-    private fun migrateOldConfig() {
-        val oldDir = File(configDir.parent, OLD_DIRECTORY)
-        if (oldDir.exists()) {
-            oldDir.copyRecursively(configDir, overwrite = true)
-            oldDir.deleteRecursively()
-        }
-    }
-
     companion object {
-        private const val DEFAULT_TEMPLATE = "{{discount}}$ en pedidos de {{minOrder}}$: {{code}}"
-        private const val DEFAULT_START = "*Descuentos Aliexpress*"
-        private const val DEFAULT_END = "*Capítulos*"
         private const val APP_DIRECTORY = "descuentados"
-        private const val OLD_DIRECTORY = "descontados"
 
         val instance = ConfigurationService()
     }

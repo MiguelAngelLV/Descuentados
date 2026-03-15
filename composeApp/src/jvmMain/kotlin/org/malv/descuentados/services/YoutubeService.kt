@@ -104,9 +104,8 @@ class YoutubeService(
     }
 
     suspend fun updateVideo(video: Video, languages: Map<String, Language>, codes: String): VideoResult {
-        val language = languages[video.languageId] ?: let {
-            return VideoResult(video.id, video.title, VideoStatus.ERROR, "Idioma no encontrado")
-        }
+        val language = languages[video.languageId]
+            ?: return VideoResult(video.id, video.title, VideoStatus.ERROR, "Idioma ${video.languageId} no encontrado.")
 
         val newCodes = CodesService.generateCodes(codes, language.template)
         val codes = video.description.between(language.start, language.end)

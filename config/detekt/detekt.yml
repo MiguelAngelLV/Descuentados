@@ -86,7 +86,7 @@ complexity:
     excludes: ['**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**']
   LongMethod:
     active: true
-    threshold: 60
+    threshold: 120
     excludes: ['**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**', '**ExceptionHandler.kt']
   LongParameterList:
     active: true

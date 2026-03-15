@@ -63,7 +63,7 @@ class YoutubeViewModel(
         val youtube = YoutubeService(credentials)
         val videos = youtube.getVideos()
         val aliexpress = videos.filter { it.description.contains("aliexpress", true) }
-        val languages = configuration.languages.associateBy { it.code }
+        val languages = configuration.languages
         _totalVideos.value = aliexpress.size
         aliexpress.forEach { video ->
             _videos.value += youtube.updateVideo(video, languages, configuration.codes)
