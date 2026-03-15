@@ -149,7 +149,7 @@ fun CodesPreview(
                 languages = languages,
                 onDismiss = {
                     showAddDialog = false
-                            },
+                },
                 onLanguageAdded = { language ->
                     showAddDialog = false
                     codeSelected = language.code
@@ -240,7 +240,7 @@ fun AddDialog(
                 Text("Ingresa el código del idioma (por ejemplo: es, en, fr)")
                 CompactTextField(
                     value = newLanguageCode,
-                    onValueChange = { newLanguageCode = it },
+                    onValueChange = { newLanguageCode = it.trim() },
                     label = { Text("Código de idioma") },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -249,17 +249,15 @@ fun AddDialog(
         confirmButton = {
             TextButton(
                 onClick = {
-                    if (newLanguageCode.isNotBlank() && !languages.containsKey(newLanguageCode)) {
-                        val newLanguage = Language(
-                            code = newLanguageCode.trim(),
-                            template = "",
-                            start = "",
-                            end = ""
-                        )
-                        onLanguageAdded(newLanguage)
-                    }
+                    val newLanguage = Language(
+                        code = newLanguageCode,
+                        template = "",
+                        start = "",
+                        end = ""
+                    )
+                    onLanguageAdded(newLanguage)
                 },
-                enabled = newLanguageCode.isNotBlank() && !languages.containsKey(newLanguageCode.trim())
+                enabled = newLanguageCode.isNotBlank() && !languages.containsKey(newLanguageCode)
             ) {
                 Text("Añadir")
             }

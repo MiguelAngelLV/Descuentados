@@ -4,10 +4,6 @@ import com.google.gson.GsonBuilder
 import org.malv.descuentados.models.Configuration
 import org.malv.descuentados.models.Language
 import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.FileReader
-import java.io.FileWriter
 import java.nio.file.Paths
 
 class ConfigurationService {
