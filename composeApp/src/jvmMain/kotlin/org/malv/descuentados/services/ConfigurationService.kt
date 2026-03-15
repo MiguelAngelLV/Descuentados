@@ -19,9 +19,9 @@ class ConfigurationService {
     private fun load(): Configuration {
         configDir.mkdirs()
         if (configFile.exists()) {
-            FileInputStream(configFile).use {
+            configFile.reader().use { reader ->
                 val gson = GsonBuilder().setPrettyPrinting().create()
-                return gson.fromJson(FileReader(configFile), Configuration::class.java) ?: Configuration()
+                return gson.fromJson(reader, Configuration::class.java) ?: Configuration()
             }
         }
         return Configuration()
@@ -33,12 +33,10 @@ class ConfigurationService {
 
     fun save() {
         if (!configFile.parentFile.exists()) configFile.parentFile.mkdirs()
-        FileOutputStream(configFile).use {
+        configFile.writer().use { writer ->
             val gson = GsonBuilder().setPrettyPrinting().create()
             val json = gson.toJson(configuration)
-            val writer = FileWriter(configFile)
             writer.write(json)
-            writer.flush()
         }
     }
 
