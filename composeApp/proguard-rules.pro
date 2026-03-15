@@ -1,3 +1,4 @@
+
 # Keep Gson classes and model types (use reflection)
 -keep class com.google.gson.** { *; }
 -keep class com.google.gson.reflect.** { *; }
@@ -33,12 +34,11 @@
 -keep class com.google.api.services.youtube.YouTubeRequest$* { *; }
 -keep class * extends com.google.api.services.youtube.YouTubeRequest$* { *; }
 
-
 # Apache HTTP / Commons utils used by google-api-client
 -keep class org.apache.http.** { *; }
 -keep class org.apache.commons.logging.** { *; }
 
-# Suppress warnings for optional server-side/logging/appengine/grpc classes not present at runtime
+# Suppress warnings for optional server-side/logging/appengine/grpc classes
 -dontwarn javax.servlet.**
 -dontwarn org.apache.avalon.**
 -dontwarn org.apache.commons.logging.impl.**
@@ -50,10 +50,8 @@
 -dontwarn io.grpc.override.**
 -dontwarn io.opencensus.**
 -dontwarn com.google.common.util.concurrent.MoreExecutors
-
-# If HttpClient shaded classes emit notes, ignore
 -dontwarn org.apache.http.**
-
+-dontwarn com.sun.net.httpserver.**
 
 # Keep Kotlin metadata
 -keep class kotlin.Metadata { *; }
@@ -61,29 +59,38 @@
     @kotlin.Metadata *;
 }
 
-# Compose runtime classes keep (usually safe)
+# Compose runtime classes
 -keep class androidx.compose.** { *; }
 
-# Keep enums and data classes reflective names
+# Keep enums and data classes
 -keepclassmembers enum * { *; }
 
-
-# Additional suppressions to resolve unresolved references reported by ProGuard
+# Additional suppressions
 -dontwarn kotlin.concurrent.atomics.**
 -dontwarn kotlin.jvm.internal.EnhancedNullability
 -dontwarn org.checkerframework.**
 -dontwarn com.google.common.**
-
-
--keep class org.immutables.value.** { *; }
 -dontwarn org.immutables.value.**
-
 -dontwarn kotlinx.coroutines.slf4j.**
 -dontwarn io.github.oshai.kotlinlogging.logback.internal.**
 -dontwarn ch.qos.logback.**
+-dontwarn org.jetbrains.kotlinx.jupyter.**
+-dontwarn org.jetbrains.kotlinx.dataframe.jupyter.**
+-dontwarn kotlinx.datetime.**
+-dontwarn org.jetbrains.kotlinx.dataframe.impl.**
+-dontwarn io.grpc.**
+-dontwarn io.opencensus.**
+-dontwarn android.os.**
+-dontwarn sun.misc.**
+-dontwarn org.apache.log4j.**
+
+# Keep immutables
+-keep class org.immutables.value.** { *; }
+
+# Keep logging
 -keep class io.github.oshai.kotlinlogging.logback.internal.** { *; }
 
-
+# Keep Google API request classes
 -keep class com.google.api.services.youtube.YouTubeRequest { *; }
 -keep class * extends com.google.api.services.youtube.YouTubeRequest { *; }
 -keepclassmembers class * extends com.google.api.client.googleapis.services.json.AbstractGoogleJsonClientRequest {
@@ -91,14 +98,14 @@
     <methods>;
 }
 
+# Keep Data utility class
 -keep class com.google.api.client.util.Data { *; }
 -keepclassmembers class com.google.api.client.util.Data {
     static <fields>;
 }
 
+# Keep Boolean constants
 -keepclassmembers class java.lang.Boolean {
     public static final java.lang.Boolean TRUE;
     public static final java.lang.Boolean FALSE;
 }
-
--keep class com.sun.net.httpserver.** { *; }
