@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- Appender para la consola -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Appender para el archivo -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${user.home}/.config/descuentados/descuentados.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- Rotar archivos diariamente -->
+            <fileNamePattern>${user.home}/.config/descuentados/descuentados.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- Mantener 30 días de logs -->
+            <maxHistory>30</maxHistory>
+            <!-- Tamaño máximo total de logs: 100MB -->
+            <totalSizeCap>100MB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- Configuración raíz -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+    </root>
+
+    <!-- Reducir el nivel de log de librerías externas -->
+    <logger name="com.google.api" level="WARN" />
+    <logger name="org.apache.http" level="WARN" />
+    <logger name="io.netty" level="WARN" />
+
+    <!-- Nivel de log de la aplicación -->
+    <logger name="org.malv.descuentados" level="DEBUG" />
+</configuration>
+
