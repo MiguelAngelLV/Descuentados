@@ -8,8 +8,19 @@ import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
 import org.malv.descuentados.services.ConfigurationService
 import org.malv.descuentados.ui.App
+import org.malv.descuentados.utils.LogConfig
+import org.slf4j.LoggerFactory
+
+private val logger = LoggerFactory.getLogger("Main")
 
 fun main(args: Array<String>) = application {
+    LogConfig.ensureLogDirectoryExists()
+    logger.info("Iniciando aplicación Descuentados")
+    logger.debug("Argumentos de línea de comandos: ${args.joinToString()}")
+    logger.info("Sistema operativo: ${System.getProperty("os.name")} ${System.getProperty("os.version")}")
+    logger.info("Java version: ${System.getProperty("java.version")}")
+    logger.info("Archivo de log: ${LogConfig.getLogFilePath()}")
+
     Window(
         onCloseRequest = {
             ConfigurationService.instance.save()

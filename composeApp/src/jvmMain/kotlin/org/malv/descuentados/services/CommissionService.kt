@@ -18,12 +18,25 @@ import org.jetbrains.kotlinx.dataframe.api.sum
 import org.jetbrains.kotlinx.dataframe.api.toList
 import org.jetbrains.kotlinx.dataframe.io.readCsv
 import org.malv.descuentados.models.Commission
+import org.slf4j.LoggerFactory
 import java.util.Locale
 
 class CommissionService {
+    private val logger = LoggerFactory.getLogger(CommissionService::class.java)
 
     fun getCommissions(file: String): List<Commission> {
-        return DataFrame.readCsv(file, parserOptions = ParserOptions(locale = Locale.US))
+        logger.info("Cargando comisiones desde archivo: $file")
+
+        val dataFrame = try {
+            DataFrame.readCsv(file, parserOptions = ParserOptions(locale = Locale.US))
+        } catch (e: Exception) {
+            logger.error("Error al leer archivo CSV: ${e.message}", e)
+            throw e
+        }
+
+        logger.debug("DataFrame cargado con ${dataFrame.rowsCount()} filas")
+
+        val commissions = dataFrame
             .rename(
                 "CompletedPaymentsTime" to "date",
                 "CompletedPaymentsAmount" to "amount",
@@ -32,8 +45,20 @@ class CommissionService {
                 "Order Platform" to "platform",
                 "OrderID" to "order"
             ).convertTo<Row>()
-            .filter { it["status"] != INVALID }
-            .filter { it["platform"] == INFLUENCER_PLATFORM }
+            .filter { row ->
+                val isValid = row["status"] != INVALID
+                if (!isValid) {
+                    logger.debug("Filtrando orden con estado inválido: {}", row["order"])
+                }
+                isValid
+            }
+            .filter { row ->
+                val isInfluencer = row["platform"] == INFLUENCER_PLATFORM
+                if (!isInfluencer) {
+                    logger.debug("Filtrando orden de plataforma no influencer: {}", row["platform"])
+                }
+                isInfluencer
+            }
             .groupBy("order")
             .aggregate {
                 min("date") into "date"
@@ -53,6 +78,16 @@ class CommissionService {
                 val previousRow = getRowOrNull(index() - 1) ?: return@add 0.0
                 (100.0 * (row.commission - previousRow.commission)) / previousRow.commission
             }.convertTo<Commission>().toList()
+
+        logger.info("Comisiones procesadas: ${commissions.size} meses de datos")
+        commissions.forEach { commission ->
+            logger.debug(
+                "Mes ${commission.month}/${commission.year}: ${commission.orders} órdenes, " +
+                    "${commission.items} items, comisión: ${commission.commission}"
+            )
+        }
+
+        return commissions
     }
 
     @DataSchema
