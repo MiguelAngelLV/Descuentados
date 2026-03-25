@@ -3,23 +3,21 @@
     <!-- Appender para la consola -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
     <!-- Appender para el archivo -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${user.home}/.config/descuentados/descuentados.log</file>
+        <file>${descuentados.log.path}</file>
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- Rotar archivos diariamente -->
-            <fileNamePattern>${user.home}/.config/descuentados/descuentados.%d{yyyy-MM-dd}.log</fileNamePattern>
-            <!-- Mantener 30 días de logs -->
-            <maxHistory>30</maxHistory>
-            <!-- Tamaño máximo total de logs: 100MB -->
-            <totalSizeCap>100MB</totalSizeCap>
+            <fileNamePattern>${descuentados.log.path}.%d{yyyy-MM-dd}</fileNamePattern>
+            <maxHistory>2</maxHistory>
+            <totalSizeCap>500KB</totalSizeCap>
         </rollingPolicy>
     </appender>
 
