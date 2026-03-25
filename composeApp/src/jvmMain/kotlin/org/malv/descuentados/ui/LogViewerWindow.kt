@@ -17,7 +17,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -25,10 +25,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
@@ -36,39 +34,19 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.delay
+import androidx.lifecycle.viewmodel.compose.viewModel
 import org.malv.descuentados.utils.LogConfig
-import org.slf4j.LoggerFactory
-
-private val logger = LoggerFactory.getLogger("LogViewerWindow")
+import org.malv.descuentados.viewmodels.LogViewerViewModel
 
 @Composable
 fun LogViewerWindow(
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    viewModel: LogViewerViewModel = viewModel { LogViewerViewModel() }
 ) {
-    var logText by remember { mutableStateOf(LogConfig.readLogFile()) }
-    var autoRefresh by remember { mutableStateOf(true) }
-    var refreshInterval by remember { mutableStateOf(2000L) }
+    val logText by viewModel.logText.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
     val scrollState = rememberScrollState(Int.MAX_VALUE)
 
-    // Auto-refresh logs
-    LaunchedEffect(autoRefresh, refreshInterval) {
-        if (autoRefresh) {
-            while (true) {
-                delay(refreshInterval)
-                try {
-                    val newText = LogConfig.readLogFile()
-                    if (newText != logText) {
-                        logText = newText
-                    }
-                } catch (e: Exception) {
-                    logger.error("Error al refrescar los logs", e)
-                }
-            }
-        }
-    }
-
-    // Scroll inicial al final
     LaunchedEffect(logText) {
         scrollState.scrollTo(scrollState.maxValue)
     }
@@ -90,7 +68,7 @@ fun LogViewerWindow(
                     style = MaterialTheme.typography.headlineSmall
                 )
                 Text(
-                    text = "Mostrando las últimas 500 líneas",
+                    text = "Mostrando logs",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -100,24 +78,17 @@ fun LogViewerWindow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Auto-refresh toggle
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Checkbox(
-                        checked = autoRefresh,
-                        onCheckedChange = { autoRefresh = it }
+                // Loading indicator
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.padding(end = 8.dp),
+                        strokeWidth = 2.dp
                     )
-                    Text("Auto-refrescar", style = MaterialTheme.typography.bodyMedium)
                 }
 
-                // Manual refresh button
                 IconButton(
-                    onClick = {
-                        logger.debug("Refrescando logs manualmente")
-                        logText = LogConfig.readLogFile()
-                    }
+                    onClick = { viewModel.refreshLogs() },
+                    enabled = !isLoading
                 ) {
                     Icon(Icons.Default.Refresh, contentDescription = "Refrescar logs")
                 }
@@ -151,7 +122,7 @@ fun LogViewerWindow(
                 ) {
                     BasicTextField(
                         value = logText,
-                        onValueChange = { }, // Solo lectura
+                        onValueChange = { },
                         readOnly = true,
                         textStyle = TextStyle(
                             fontFamily = FontFamily.Monospace,
