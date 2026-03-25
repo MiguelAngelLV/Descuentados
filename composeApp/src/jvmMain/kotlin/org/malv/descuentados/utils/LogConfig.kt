@@ -4,6 +4,11 @@ import java.io.File
 import java.nio.file.Paths
 
 object LogConfig {
+    init {
+        // Configurar la propiedad del sistema antes de que logback se inicialice
+        System.setProperty("descuentados.log.path", getLogFilePath())
+    }
+
     fun getLogFilePath(): String {
         val os = System.getProperty("os.name").lowercase()
 
@@ -27,5 +32,14 @@ object LogConfig {
     fun ensureLogDirectoryExists() {
         val logFile = File(getLogFilePath())
         logFile.parentFile.mkdirs()
+    }
+
+    fun readLogFile(): String {
+        val logFile = File(getLogFilePath())
+        return if (logFile.exists()) {
+            logFile.readText()
+        } else {
+            "No hay logs disponibles"
+        }
     }
 }

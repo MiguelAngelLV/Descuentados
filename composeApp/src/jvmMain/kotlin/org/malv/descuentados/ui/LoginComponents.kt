@@ -49,14 +49,15 @@ fun LogoutButton(onClick: () -> Unit = {}) {
 
 @Composable
 fun YoutubeLogin(
-    youtubeViewModel: YoutubeViewModel = viewModel { YoutubeViewModel(ConfigurationService.instance) }
+    youtubeViewModel: YoutubeViewModel = viewModel { YoutubeViewModel(ConfigurationService.instance) },
+    modifier: Modifier = Modifier
 ) {
     val isLogged by youtubeViewModel.isLogged.collectAsState()
     val isFileSelected by youtubeViewModel.isFileSelected.collectAsState()
     val showLogin = !isLogged && isFileSelected
     val showLogout = isLogged
 
-    CustomCard(modifier = Modifier.fillMaxWidth()) {
+    CustomCard(modifier = modifier.fillMaxWidth()) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.padding(8.dp)
         ) {

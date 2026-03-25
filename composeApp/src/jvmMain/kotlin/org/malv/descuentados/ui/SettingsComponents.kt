@@ -33,6 +33,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.WindowPosition
+import androidx.compose.ui.window.WindowState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.malv.descuentados.models.Language
 import org.malv.descuentados.services.ConfigurationService
@@ -53,7 +56,10 @@ fun SettingsUI(
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            YoutubeLogin()
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                YoutubeLogin(modifier = Modifier.weight(0.5f))
+                ShowLogs(modifier = Modifier.weight(0.5f))
+            }
             CodesPreview(
                 languages = languages,
                 onUpdateLanguage = {
@@ -65,6 +71,40 @@ fun SettingsUI(
                 onDeleteLanguage = {
                     codesViewModel.deleteLanguage(it)
                 }
+            )
+        }
+    }
+}
+
+@Composable
+fun ShowLogs(modifier: Modifier) {
+    var showLogViewer by rememberSaveable { mutableStateOf(false) }
+
+    CustomCard(modifier = modifier.fillMaxWidth()) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.padding(8.dp)
+        ) {
+            Text(
+                text = "Logs",
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            Button(onClick = { showLogViewer = true }) {
+                Text("Ver logs")
+            }
+        }
+    }
+
+    if (showLogViewer) {
+        Window(
+            onCloseRequest = { showLogViewer = false },
+            title = "Visor de Logs - Descuentados",
+            state = WindowState(width = 1000.dp, height = 800.dp, position = WindowPosition.Aligned(Alignment.TopEnd)),
+
+            ) {
+            LogViewerWindow(
+                onClose = { showLogViewer = false }
             )
         }
     }
